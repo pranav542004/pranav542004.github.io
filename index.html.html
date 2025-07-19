@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Scholarship Form</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body class="bg-gray-100">
+  <div class="max-w-3xl mx-auto p-6 bg-white shadow-2xl mt-10 rounded-2xl">
+    <h1 class="text-2xl font-bold mb-2 text-center text-green-700">STUDENT SCHOLARSHIP FORM</h1>
+    <h2 class="text-md text-center mb-6 font-semibold text-gray-700">Application For Scholarship Programme 2025-26</h2>
+    <form id="scholarshipForm" enctype="multipart/form-data">
+      <div class="grid grid-cols-1 gap-4">
+        <input type="text" name="student_name" placeholder="Name (as per 10th Marks Card)" required class="p-2 border rounded">
+        <input type="date" name="dob" placeholder="Date of Birth" required class="p-2 border rounded">
+
+        <label class="text-sm font-semibold">Place</label>
+        <select name="place" required class="p-2 border rounded">
+          <option value="">Select a Place</option>
+          <option value="Place1">Place1</option>
+          <option value="Place2">Place2</option>
+          <option value="Place3">Place3</option>
+        </select>
+
+        <input type="text" name="father_name" placeholder="Father's Name" required class="p-2 border rounded">
+        <input type="text" name="mother_name" placeholder="Mother's Name" required class="p-2 border rounded">
+        <input type="email" name="email" placeholder="Email ID" required class="p-2 border rounded">
+        <input type="text" name="caste_cert" placeholder="Caste Certificate Number" required class="p-2 border rounded">
+        <textarea name="address" placeholder="Complete Home Address" required class="p-2 border rounded"></textarea>
+        <input type="text" name="member_id" placeholder="Member ID (Optional)" class="p-2 border rounded">
+
+        <input type="tel" name="applicant_contact" placeholder="Contact Number of Applicant" required class="p-2 border rounded">
+        <input type="tel" name="guardian_contact" placeholder="Contact Number of Guardian" required class="p-2 border rounded">
+
+        <label class="text-sm font-semibold">School (10th) Details</label>
+        <input type="text" name="school_name_10" placeholder="Name of School" required class="p-2 border rounded">
+        <input type="text" name="school_year_10" placeholder="Passing Year" required class="p-2 border rounded">
+        <input type="text" name="school_marks_10" placeholder="Marks Obtained" required class="p-2 border rounded">
+        <input type="text" name="school_percentage_10" placeholder="Percentage" required class="p-2 border rounded">
+
+        <label class="text-sm font-semibold">College (12th) Details (Optional)</label>
+        <input type="text" name="college_name_12" placeholder="Name of College" class="p-2 border rounded">
+        <input type="text" name="college_year_12" placeholder="Passing Year" class="p-2 border rounded">
+        <input type="text" name="college_marks_12" placeholder="Marks Obtained" class="p-2 border rounded">
+        <input type="text" name="college_percentage_12" placeholder="Percentage" class="p-2 border rounded">
+
+        <textarea name="course_details" placeholder="Name of Institute for Enrolled Course" required class="p-2 border rounded"></textarea>
+
+        <label class="text-sm font-semibold">Select Course</label>
+        <select name="course" required class="p-2 border rounded">
+          <option value="">Select a Course</option>
+          <option value="BTech">BTech</option>
+          <option value="BCom">BCom</option>
+          <option value="BSc">BSc</option>
+          <option value="BA">BA</option>
+          <option value="Others">Others</option>
+        </select>
+
+        <label class="text-sm font-semibold">Upload 10th Marks Card</label>
+        <input type="file" name="marks10" accept=".pdf,.jpg,.jpeg,.png" required class="p-2 border rounded">
+
+        <label class="text-sm font-semibold">Upload 12th Marks Card (if applicable)</label>
+        <input type="file" name="marks12" accept=".pdf,.jpg,.jpeg,.png" class="p-2 border rounded">
+
+        <label class="text-sm font-semibold">Upload Income Certificate</label>
+        <input type="file" name="income_cert" accept=".pdf,.jpg,.jpeg,.png" required class="p-2 border rounded">
+
+        <label class="text-sm font-semibold">Upload Fee Receipt</label>
+        <input type="file" name="fee_receipt" accept=".pdf,.jpg,.jpeg,.png" required class="p-2 border rounded">
+
+        <label class="text-sm font-semibold">Upload Your Photo</label>
+        <input type="file" name="photo" accept=".pdf,.jpg,.jpeg,.png" required class="p-2 border rounded">
+      </div>
+
+      <div class="mt-4 text-center">
+        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Submit</button>
+      </div>
+    </form>
+
+    <div id="successMsg" class="hidden mt-6 text-green-600 font-semibold text-center">
+      ✅ Your documents have been successfully uploaded. You will receive a confirmation shortly.
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('scholarshipForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const plainData = {};
+      formData.forEach((value, key) => {
+        if (typeof value === 'string') {
+          plainData[key] = value;
+        }
+      });
+
+      try {
+        const scriptURL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec';
+        const response = await fetch(scriptURL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(plainData)
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+        console.log("Saved to sheet");
+        document.getElementById('successMsg').classList.remove('hidden');
+        form.reset();
+      } catch (error) {
+        console.error("Error saving to sheet", error);
+        alert("There was an error saving your data. Please try again later or contact the admin.");
+      }
+    });
+  </script>
+</body>
+</html>
